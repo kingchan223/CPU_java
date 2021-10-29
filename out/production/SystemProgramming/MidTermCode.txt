@@ -1,0 +1,56 @@
+[ -- HEADER -- ]
+0x0006 //Header size : 6바이트.
+0x0054 //CS size : 84바이트
+0x000C //DS size : 12바이트
+
+[ --CODE SEGMENT--]
+0x0246 // LDC 70
+0x0300 // STA 0
+0x0250 // LDC 80
+0x0302 // STA 2
+0x025A // LDC 90
+0x0304 // STA 4
+0x0100 // LDA 0
+0x0402 // ADDA 2
+0x0404 // ADDA 4
+0x0306 // STA 6
+0x0106 // LDA 6
+0x0B03// DIVC 3
+0x0308 // STA 8
+0x0108 // LDA 8
+0x075A // SUBC 90
+0x0E2C // JMPBZ 44(아래 else if)
+0x0201 // LDC 1
+0x030A // STA 10
+0x0D58 // JMP 88(if문 밖으로 )
+0x0108 // LDA 8
+0x0750 // SUBC 80
+0x0E38 // JMPBZ 56(아래 else if)
+0x0202 // LDC 2
+0x030A // STA 10
+0x0D58 // JMP 88(if문 밖으로 )
+0x0108 // LDA 8
+0x0746 // SUBC 70
+0x0E44 // JMPBZ 68(아래 else if)
+0x0203 // LDC 3
+0x030A // STA 10
+0x0D58 // JMP 88(if문 밖으로 )
+0x0108 // LDA 8
+0x073C // SUBC 60
+0x0E50 // JMPBZ 80(아래 else )
+0x0204 // LDC 4
+0x030A // STA 10
+0x0D58 // JMP 88(if문 밖으로 )
+0x0D52 // JMP 82(아래로)
+0x0205 //  LDC 5
+0x030A // STA 10
+0x0D58 // JMP 88(if문 밖으로 )
+0x0000 // HALT
+
+[ --DATA SEGMENT--]
+0x0000 //
+0x0000 //
+0x0000 //
+0x0000 //
+0x0000 //
+0x0001 //
