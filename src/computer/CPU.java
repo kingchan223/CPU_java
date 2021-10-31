@@ -15,7 +15,7 @@ public class CPU {
             this.registers[i] = new Register((short) 0);
         }
         //메모리 associate
-        this.associate(memory);//this.memory = memory
+        this.associate(memory);
     }
 
     //pc, sp 세팅
@@ -39,17 +39,13 @@ public class CPU {
         //load next instruction from memory to IR
         //PC -> MAR로 옮긴다.
         this.registers[ERegister.eMAR.ordinal()].setValue((short) ((this.registers[ERegister.ePC.ordinal()].getValue())/Props.BYTE_));//mar은 3
-        //this.memory.load(4) -> 0x0803
         this.registers[ERegister.eMBR.ordinal()].setValue(this.memory.load(this.registers[ERegister.eMAR.ordinal()].getValue()));
-        //IR의 value는 0x0803이 된다.
         this.registers[ERegister.eIR.ordinal()].setValue(this.registers[ERegister.eMBR.ordinal()].getValue());
     }
 
 
     private void excute() {
-//        EOpCode.values()[((CPU.IR)0x0008]
         System.out.println("-----------------");
-//        System.out.println(((CPU.IR) this.registers[ERegister.eIR.ordinal()]).getOperand());
         System.out.println(EOpCode.values()[((CPU.IR) this.registers[ERegister.eIR.ordinal()]).getOperand()] + " "+ ((IR) this.registers[ERegister.eIR.ordinal()]).getOperator());
 
         switch(EOpCode.values()[((CPU.IR) this.registers[ERegister.eIR.ordinal()]).getOperand()]){
@@ -100,7 +96,7 @@ public class CPU {
                 this.alu.divC(((CPU.IR) this.registers[ERegister.eIR.ordinal()]).getOperator());
                 cu.upPCvalue();
                 break;
-            case eAND:
+            case eANDA:
                 this.alu.and(((CPU.IR) this.registers[ERegister.eIR.ordinal()]).getOperator());
                 cu.upPCvalue();
                 break;
@@ -116,8 +112,7 @@ public class CPU {
             default:
                 break;
         }
-        //pc값 변경
-        System.out.println("---------------");
+        System.out.println("-----------------");
     }
 
     private enum EOpCode {
@@ -133,7 +128,7 @@ public class CPU {
         eMULC, // 9
         eDIVA, // A
         eDIVC, // B
-        eAND,  // C
+        eANDA,  // C
         eJMP,  // D
         eJMPBZ,// E
         eJMPEQ,// F
@@ -167,14 +162,15 @@ public class CPU {
                 System.out.println(operator+"로 JMP합니다.");
                 jmpPCvalue(operator);
             }
-            else{
-                cu.upPCvalue();
-            }
-
+            else cu.upPCvalue();
         }
 
         public void jumpEQ(short operator) {
-
+            if(((Status)registers[ERegister.eStatus.ordinal()]).eqaul()){
+                System.out.println(operator+"로 JMP합니다.");
+                jmpPCvalue(operator);
+            }
+            else cu.upPCvalue();
         }
     }
 
@@ -233,13 +229,10 @@ public class CPU {
         }
 
         public void and(short operator) {
-
+            short acVal = registers[ERegister.eAC.ordinal()].getValue();
+            short loadedValue = memory.load((short) ((operator + memory.getDataStart())/2));
+            registers[ERegister.eAC.ordinal()].setValue((short) (acVal&loadedValue));
         }
-
-
-        public void greaterThan() {}
-        public void equal() {}
-
     }
 
 
@@ -266,6 +259,14 @@ public class CPU {
             if(value <= 0) status[1] = true;
             else status[1] = false;
             return status[1];
+        }
+
+        public boolean eqaul(){
+            for (int i = 0; i < 4; i++) status[i] = false;
+            short value = registers[ERegister.eAC.ordinal()].getValue();
+            if(value == 0) status[0] = true;
+            else status[0] = false;
+            return status[0];
         }
     }
 
@@ -339,11 +340,9 @@ public class CPU {
     private void store(){
         //sp를 IR의 operator를 뽑아서 update한다.
         short irOperator = ((IR) this.registers[ERegister.eIR.ordinal()]).getOperator();
-        cu.updateSPvalue((short) (irOperator));
-
+        cu.updateSPvalue((irOperator));
         //sp에 있는 값을 MAR로 옮긴다.
         this.registers[ERegister.eMAR.ordinal()].setValue((short) ((this.registers[ERegister.eSP.ordinal()].getValue())/2));
-//        System.out.println("this.registers[ERegister.eSP.ordinal()].getValue() + memory.getDataStart()):"+(this.registers[ERegister.eSP.ordinal()].getValue() + memory.getDataStart()));
         //AC에 있는 값을 뽑아서 MBR에 옮긴다
         this.registers[ERegister.eMBR.ordinal()].setValue(this.registers[ERegister.eAC.ordinal()].getValue());
         //메모리에게 mar과 mbr을 주면서 mar에 mbr을 저장하라고 명령한다.
