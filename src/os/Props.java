@@ -1,4 +1,4 @@
-package computer;
+package os;
 
 public interface Props {
     public static final short BYTE_ = 2;

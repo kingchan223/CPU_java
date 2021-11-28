@@ -1,16 +1,10 @@
-package computer;
+package os;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-
-/*
-  sizeHeader:6
-  sizeCodeSegment:84
-  sizeDataSegment:12
-*/
-public class Loader {
+public class Loader {//PCB를 만들기
     private short sizeHeader;
     private short sizeCodeSegment;
     private short sizeDataSegment;
